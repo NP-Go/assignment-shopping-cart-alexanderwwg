@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-var categoryList []string
-
 var currentCategoryList []string
 
 func addCategoryToSlice(categoryName string) {
@@ -39,5 +37,5 @@ func categoryExists(slice []string, index string) bool {
 func init() {
 	var itemCategories = []string{"Household", "Food", "Drinks"}
 	currentCategoryList = itemCategories
-	savedCategoryLists := []categoryList{currentCategoryList}
+
 }
