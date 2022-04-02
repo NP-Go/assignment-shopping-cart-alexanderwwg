@@ -17,14 +17,11 @@ Shopping List Application
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 )
-
-type itemInformation struct {
-	category int
-	quantity int
-	unitCost float64
-}
 
 // category list
 var currentCategoryList []string
@@ -57,30 +54,30 @@ func mainMenu() {
 	fmt.Println("=========================")
 	fmt.Println("1. View entire shopping list.")
 	fmt.Println("2. Generate Shopping List Report")
-	fmt.Println("3.Add Items.")
-	fmt.Println("4.Modify Items.")
-	fmt.Println("5.Delete Item.")
-	fmt.Println("6.Print Current Data.")
-	fmt.Println("7.Add new Category Name")
-	fmt.Println("Input 0 to quit.")
+	fmt.Println("3. Add Items.")
+	fmt.Println("4. Modify Items.")
+	fmt.Println("5. Delete Item.")
+	fmt.Println("6. Print Current Data.")
+	fmt.Println("7. Add new Category Name")
+	fmt.Println("10. Quit.")
 
-	optionSelect(getIntInput())
+	mainMenuOptionSelect(getIntInput())
 }
 
-func optionSelect(input int) {
+func mainMenuOptionSelect(input int32) {
 	switch input {
-	// end program
-	case 0:
-	// if not do everything else
 	case 1:
 		viewShoppingList()
 	case 2:
 		generateSLReport()
 	case 3:
+		addItems()
 	case 4:
 	case 5:
 	case 6:
 	case 7:
+	case 10:
+
 	default:
 		fmt.Println("Error, please select an option in the list.")
 		mainMenu()
@@ -109,25 +106,25 @@ func generateSLReport() {
 	printCategoryInformation(getIntInput())
 }
 
-func printCategoryInformation(input int) {
+func printCategoryInformation(input int32) {
 	if input == 1 || input == 2 {
 		for i := range currentCategoryList {
 			if input == 1 {
 				var x float64
 				fmt.Print(currentCategoryList[i] + ": ")
-				for _, v := range currentItemList {
-					if v.category == i {
-						x += v.unitCost
+				for _, j := range currentItemList {
+					if j.category == i {
+						x += j.unitCost
 					}
 				}
 				fmt.Println(x)
 			}
 			if input == 2 {
-				for k, v := range currentItemList {
+				for j, v := range currentItemList {
 					if v.category == i {
 						fmt.Print("Category: ")
 						fmt.Print(currentCategoryList[v.category])
-						fmt.Printf(" -  Item: %v Quantity: %v Unit Cost %v\n", k, v.quantity, v.unitCost)
+						fmt.Printf(" -  Item: %v Quantity: %v Unit Cost %v\n", j, v.quantity, v.unitCost)
 					}
 				}
 			}
@@ -143,8 +140,59 @@ func printCategoryInformation(input int) {
 	}
 }
 
-func addItemInformation() {
+func addItems() {
+	var name string
+	var category string
+	var units int
+	var cost float64
+AssignName:
+	fmt.Println("What is the name of your item?")
+	fmt.Scanln(&name)
+	if name == "" {
+		mainMenu()
+	}
+	if itemNameExists(name) {
+		fmt.Println("Item already exists!")
+		goto AssignName
+	}
+AssignCategory:
+	fmt.Println("What is the category of your item?")
+	fmt.Scanln(&category)
+	if category == "" {
+		mainMenu()
+	}
+	if !categoryExists(currentCategoryList, category) {
+		fmt.Println("Category does not exist!\nThe categories that you have now are : ")
+		printAllCategories()
+		goto AssignCategory
+	}
+AssignUnits:
+	fmt.Println("How many units?")
+	fmt.Scanln(&units)
+	if units == 0 {
+		fmt.Println("Cannot have less than 1 unit!")
+		goto AssignUnits
+	}
+AssignCost:
+	fmt.Println("What is the cost per unit?")
+	fmt.Scanln(&cost)
+	if cost == 0 {
+		fmt.Println("Cannot be 0!")
+		goto AssignCost
+	}
+	newItem := itemInformation{getCategoryIndex(currentCategoryList, category), units, cost}
+	currentItemList[name] = newItem
+}
 
+func printAllCategories() {
+	for i := range currentCategoryList {
+		fmt.Println(currentCategoryList[i])
+	}
+}
+
+func itemNameExists(name string) bool {
+	_, ok := currentItemList[name]
+	return ok
 }
 
 func modifyQuantity() {
@@ -163,12 +211,15 @@ func addNewCategoryName() {
 
 }
 
-func getIntInput() int {
-	var input int
-	_, err := fmt.Scanln(&input)
+func getIntInput() int32 {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	input, err := strconv.ParseInt(scanner.Text(), 10, 64)
 	if err != nil {
-		fmt.Println("Error: Please use numbers only.")
-		getIntInput()
+		fmt.Printf("Error, please use a number")
+	} else {
+		result := int32(input)
+		return result
 	}
-	return input
+	return 0
 }
