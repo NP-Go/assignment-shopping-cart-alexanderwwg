@@ -73,6 +73,7 @@ func mainMenuOptionSelect(input int32) {
 	case 3:
 		addItems()
 	case 4:
+		modifyItem()
 	case 5:
 	case 6:
 	case 7:
@@ -195,11 +196,90 @@ func itemNameExists(name string) bool {
 	return ok
 }
 
-func modifyQuantity() {
+// Modify Item
+// First I check if I need to rename the map key-
+// which will make me delete the old key and replace with the new name. But I will copy all the data required over first.
+// I do not think this is the best solution at the moment. Will need to think of another way.
+// Assigns all inputs to a tempItemInfo which will replace the contents of the key.
+func modifyItem() {
+	var name string
+	var category string
+	var units int
+	var cost float64
+	var tempItemInfo itemInformation
 
+	fmt.Println("What item would you like to modify?")
+	fmt.Scanln(&name)
+	if itemNameExists(name) {
+		fmt.Printf("Current item name is %v, Category is %v, Quantity is %v, Unit Cost is %v.\n", name,
+			currentCategoryList[currentItemList[name].category], currentItemList[name].quantity, currentItemList[name].unitCost)
+	} else {
+		fmt.Println("Item does not exist.")
+		modifyItem()
+	}
+	oldName := name
+ChangeName:
+	name = ""
+	fmt.Println("Enter a new name. Leave empty if you do not want to change.")
+	fmt.Scanln(&name)
+	if name == "" {
+		fmt.Println("Not renaming.")
+		name = oldName
+	} else if name != "" {
+		if itemNameExists(name) {
+			fmt.Println("Item name already exists in list.")
+			goto ChangeName
+		}
+		currentItemList[name] = currentItemList[oldName]
+		delete(currentItemList, oldName)
+	}
+ChangeCategory:
+	fmt.Println("Enter new category. Leave empty if you do not want to change it.")
+	fmt.Scanln(&category)
+	if category == "" {
+		fmt.Println("Not renaming.")
+		tempItemInfo.category = currentItemList[name].category
+	} else if !categoryExists(currentCategoryList, category) {
+		fmt.Println("Category name does not exist.")
+		goto ChangeCategory
+	} else {
+		tempItemInfo.category = getCategoryIndex(currentCategoryList, category)
+	}
+	fmt.Println("Enter new quantity. Leave empty if you do not wish to change it.")
+	units = int(getIntInput())
+	if units != 0 {
+		tempItemInfo.quantity = units
+	} else {
+		tempItemInfo.quantity = currentItemList[name].quantity
+	}
+	fmt.Println("Enter new unit cost. Leave empty if you do not wish to change it.")
+	fmt.Scanln(&cost)
+	if cost != 0 {
+		tempItemInfo.unitCost = cost
+	} else {
+		tempItemInfo.unitCost = currentItemList[name].unitCost
+	}
+	currentItemList[name] = tempItemInfo
+	fmt.Println(currentItemList[name])
+	fmt.Println(name)
+	mainMenu()
 }
 
 func deleteFromList() {
+	var name string
+	fmt.Println("What do you want to delete?")
+	fmt.Scanln(&name)
+	if name == "" {
+		mainMenu()
+	} else {
+		if itemNameExists(name) {
+			delete(currentItemList, name)
+			fmt.Println("Deleted " + name)
+		} else {
+			fmt.Println("Item not found. Nothing to delete!")
+			deleteFromList()
+		}
+	}
 
 }
 
