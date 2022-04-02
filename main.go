@@ -50,9 +50,44 @@ func init() {
 
 func main() {
 	mainMenu()
-
 }
 
+func mainMenu() {
+	fmt.Println("Shopping List Application")
+	fmt.Println("=========================")
+	fmt.Println("1. View entire shopping list.")
+	fmt.Println("2. Generate Shopping List Report")
+	fmt.Println("3.Add Items.")
+	fmt.Println("4.Modify Items.")
+	fmt.Println("5.Delete Item.")
+	fmt.Println("6.Print Current Data.")
+	fmt.Println("7.Add new Category Name")
+	fmt.Println("Input 0 to quit.")
+
+	optionSelect(getIntInput())
+}
+
+func optionSelect(input int) {
+	switch input {
+	// end program
+	case 0:
+	// if not do everything else
+	case 1:
+		viewShoppingList()
+	case 2:
+		generateSLReport()
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	default:
+		fmt.Println("Error, please select an option in the list.")
+		mainMenu()
+	}
+}
+
+// option 1
 func viewShoppingList() {
 	for i, v := range currentItemList {
 		fmt.Print("Category: ")
@@ -64,8 +99,48 @@ func viewShoppingList() {
 	mainMenu()
 }
 
+// option 2
 func generateSLReport() {
+	fmt.Println("Generate Report")
+	fmt.Println("1. Total Cost of each Category")
+	fmt.Println("2. List of items by Category")
+	fmt.Println("3. Main Menu")
 
+	printCategoryInformation(getIntInput())
+}
+
+func printCategoryInformation(input int) {
+	if input == 1 || input == 2 {
+		for i := range currentCategoryList {
+			if input == 1 {
+				var x float64
+				fmt.Print(currentCategoryList[i] + ": ")
+				for _, v := range currentItemList {
+					if v.category == i {
+						x += v.unitCost
+					}
+				}
+				fmt.Println(x)
+			}
+			if input == 2 {
+				for k, v := range currentItemList {
+					if v.category == i {
+						fmt.Print("Category: ")
+						fmt.Print(currentCategoryList[v.category])
+						fmt.Printf(" -  Item: %v Quantity: %v Unit Cost %v\n", k, v.quantity, v.unitCost)
+					}
+				}
+			}
+		}
+		fmt.Printf("Press Enter to return to the main menu.")
+		fmt.Scanln()
+		mainMenu()
+	} else if input == 3 {
+		mainMenu()
+	} else {
+		fmt.Println("Error. Please try again.")
+		generateSLReport()
+	}
 }
 
 func addItemInformation() {
@@ -88,42 +163,12 @@ func addNewCategoryName() {
 
 }
 
-func mainMenu() {
-	fmt.Println("Shopping List Application")
-	fmt.Println("=========================")
-	fmt.Println("1. View entire shopping list.")
-	fmt.Println("2. Generate Shopping List Report")
-	fmt.Println("3.Add Items.")
-	fmt.Println("4.Modify Items.")
-	fmt.Println("5.Delete Item.")
-	fmt.Println("6.Print Current Data.")
-	fmt.Println("7.Add new Category Name")
-	fmt.Println("Input 0 to quit.")
-
-	// get user input
+func getIntInput() int {
 	var input int
 	_, err := fmt.Scanln(&input)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error: Please use numbers only.")
+		getIntInput()
 	}
-	optionSelect(input)
-}
-
-func optionSelect(input int) {
-	switch input {
-	// end program
-	case 0:
-	// if not do everything else
-	case 1:
-		viewShoppingList()
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	default:
-		fmt.Println("Error, please select an option in the list.")
-		mainMenu()
-	}
+	return input
 }
