@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-var currentCategoryList []string
-
 func addCategoryToSlice(categoryName string) {
 
 	// check if name exists in slice
@@ -32,10 +30,4 @@ func categoryExists(slice []string, index string) bool {
 		}
 	}
 	return false
-}
-
-func init() {
-	var itemCategories = []string{"Household", "Food", "Drinks"}
-	currentCategoryList = itemCategories
-
 }
