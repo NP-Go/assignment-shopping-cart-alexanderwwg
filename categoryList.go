@@ -1,21 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 )
-
-func addCategoryToSlice(categoryName string) {
-
-	// check if name exists in slice
-	if categoryExists(currentCategoryList, categoryName) {
-		fmt.Println("True")
-	} else {
-		fmt.Println("Adding " + categoryName + " to list of categories.")
-		currentCategoryList = append(currentCategoryList, categoryName)
-	}
-
-}
 
 func categoryExists(slice []string, index string) bool {
 	s := reflect.ValueOf(slice)

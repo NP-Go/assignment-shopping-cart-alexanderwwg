@@ -118,7 +118,7 @@ func printCategoryInformation(input int32) {
 				fmt.Print(currentCategoryList[i] + ": ")
 				for _, j := range currentItemList {
 					if j.category == i {
-						x += j.unitCost
+						x += (j.unitCost * float64(j.quantity))
 					}
 				}
 				fmt.Println(x)
