@@ -79,6 +79,7 @@ func mainMenuOptionSelect(input int32) {
 	case 6:
 		printCurrentData()
 	case 7:
+		addNewCategoryName()
 	case 10:
 
 	default:
@@ -152,7 +153,8 @@ AssignName:
 	fmt.Println("What is the name of your item?")
 	fmt.Scanln(&name)
 	if name == "" {
-		mainMenu()
+		fmt.Println("Error. No input found.")
+		goto AssignName
 	}
 	if itemNameExists(name) {
 		fmt.Println("Item already exists!")
@@ -162,7 +164,8 @@ AssignCategory:
 	fmt.Println("What is the category of your item?")
 	fmt.Scanln(&category)
 	if category == "" {
-		mainMenu()
+		fmt.Println("Error. No input found.")
+		goto AssignCategory
 	}
 	if !categoryExists(currentCategoryList, category) {
 		fmt.Println("Category does not exist!\nThe categories that you have now are : ")
@@ -185,6 +188,7 @@ AssignCost:
 	}
 	newItem := itemInformation{getCategoryIndex(currentCategoryList, category), units, cost}
 	currentItemList[name] = newItem
+	mainMenu()
 }
 
 func printAllCategories() {
@@ -299,7 +303,22 @@ func printCurrentData() {
 }
 
 func addNewCategoryName() {
-
+	var name string
+	fmt.Println("What is the new category name you would like to add?")
+	fmt.Scanln(&name)
+	if name == "" {
+		fmt.Println("Error, no input found.")
+		mainMenu()
+	} else {
+		if categoryExists(currentCategoryList, name) {
+			fmt.Printf("Error. %v already exists.", name)
+			addNewCategoryName()
+		} else {
+			currentCategoryList = append(currentCategoryList, name)
+			fmt.Println("Added " + name + " to list of categories.")
+			mainMenu()
+		}
+	}
 }
 
 func getIntInput() int32 {
