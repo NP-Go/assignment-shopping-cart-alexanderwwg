@@ -75,7 +75,9 @@ func mainMenuOptionSelect(input int32) {
 	case 4:
 		modifyItem()
 	case 5:
+		deleteFromList()
 	case 6:
+		printCurrentData()
 	case 7:
 	case 10:
 
@@ -275,6 +277,7 @@ func deleteFromList() {
 		if itemNameExists(name) {
 			delete(currentItemList, name)
 			fmt.Println("Deleted " + name)
+			mainMenu()
 		} else {
 			fmt.Println("Item not found. Nothing to delete!")
 			deleteFromList()
@@ -284,7 +287,15 @@ func deleteFromList() {
 }
 
 func printCurrentData() {
-
+	fmt.Println("Print Current Data")
+	if len(currentItemList) == 0 {
+		fmt.Println("No data to print!")
+	} else {
+		for i, v := range currentItemList {
+			fmt.Printf("%v, %v \n", i, v)
+		}
+	}
+	mainMenu()
 }
 
 func addNewCategoryName() {
