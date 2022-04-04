@@ -252,7 +252,7 @@ ChangeCategory:
 		tempItemInfo.category = getCategoryIndex(currentCategoryList, category)
 	}
 	fmt.Println("Enter new quantity. Leave empty if you do not wish to change it.")
-	units = int(getIntInput())
+	fmt.Scanln(&units)
 	if units != 0 {
 		tempItemInfo.quantity = units
 	} else {
@@ -326,7 +326,7 @@ func getIntInput() int32 {
 	scanner.Scan()
 	input, err := strconv.ParseInt(scanner.Text(), 10, 64)
 	if err != nil {
-		fmt.Printf("Error, please use a number")
+		fmt.Println("Error, please use a number.")
 	} else {
 		result := int32(input)
 		return result
